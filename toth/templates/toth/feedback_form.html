@@ -1,0 +1,50 @@
+{% extends 'toth/base.html' %}
+
+{% block title %}Comentarios respecto al material educativo{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Comentarios respecto al material educativo</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-center text-muted">Comparte tus opiniones y ayuda a mejorar las futuras clases.</p>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="comentario" class="form-label">Comentario</label>
+                            {{ form_feedback.comentario }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="contenido_adjunto" class="form-label">Envía un video de tu progreso al profesor</label>
+                            {{ form_feedback.contenido_adjunto }}
+                        </div>
+
+                        <h5 class="mt-4">Puntuación de Contenidos</h5>
+                        <hr>
+                        {% for field in form_feedback %}
+                            {% if field.name|slice:":21" == "puntuacion_contenido_" %}
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>{{ field.label }}</strong></label>
+                                    {{ field }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-block">
+                                Enviar devolución de clase y marcala como realizada
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

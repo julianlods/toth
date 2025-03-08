@@ -1,0 +1,80 @@
+{% extends 'toth/base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 720px;">
+    <h2 class="text-center mb-4 text-light bg-success p-3 rounded shadow-lg">Editar Perfil</h2>
+
+    <!-- Navegación de pestañas -->
+    <ul class="nav nav-tabs" id="editProfileTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="true">Información de Contacto</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="personal-tab" data-bs-toggle="tab" href="#personal" role="tab" aria-controls="personal" aria-selected="false">Datos Personales</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="password-tab" data-bs-toggle="tab" href="#password" role="tab" aria-controls="password" aria-selected="false">Cambiar Contraseña</a>
+        </li>
+    </ul>
+
+    <!-- Contenido de las pestañas -->
+    <div class="tab-content mt-4" id="editProfileTabContent">
+        <!-- Información de Contacto -->
+        <div class="tab-pane fade show active" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="contact_form">
+                <h4 class="text-secondary">Información de Contacto</h4>
+                {{ user_form.as_p }}
+                <button type="submit" class="btn btn-primary w-100 mt-4">Guardar cambios</button>
+            </form>
+        </div>
+
+        <!-- Datos Personales -->
+        <div class="tab-pane fade" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="personal_form">
+                <h4 class="text-secondary">Datos Personales</h4>
+                {{ datos_form.as_p }}
+                <button type="submit" class="btn btn-primary w-100 mt-4">Guardar cambios</button>
+            </form>
+        </div>
+
+        <!-- Cambiar Contraseña -->
+        <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="password_form">
+                <h4 class="text-secondary">Cambiar Contraseña</h4>
+                {{ password_form.as_p }}
+                <p class="text-muted">Completa los campos solo si deseas cambiar tu contraseña.</p>
+                <button type="submit" class="btn btn-primary w-100 mt-4">Actualizar contraseña</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="#" class="btn btn-secondary w-100">Cancelar</a>
+    </div>
+</div>
+
+<!-- SweetAlert2 para mensajes -->
+{% if messages %}
+<script>
+    {% for message in messages %}
+        Swal.fire({
+            icon: '{% if message.tags == "success" %}success{% else %}error{% endif %}',
+            title: '{% if message.tags == "success" %}¡Éxito!{% else %}¡Error!{% endif %}',
+            text: '{{ message }}',
+            confirmButtonText: 'Aceptar',
+            customClass: {
+                confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+        });
+    {% endfor %}
+</script>
+{% endif %}
+
+{% endblock %}

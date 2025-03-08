@@ -1,0 +1,53 @@
+{% extends 'toth/base.html' %}
+
+{% block title %}Iniciar Sesión - Toth{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Iniciar Sesión</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-center text-muted">Ingresa tus credenciales para acceder a tu cuenta.</p>
+                    <form method="post" action="{% url 'toth:login' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username_or_email" class="form-label">Usuario o Correo Electrónico</label>
+                            <input type="text" id="username_or_email" name="username_or_email" class="form-control" placeholder="Ingrese su usuario o email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Ingrese su contraseña" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="text-center mt-3">
+                    <p class="text-muted">¿No tenés cuenta? <a href="{% url 'toth:register' %}" class="text-primary">Registrate acá</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SweetAlert2 -->
+{% if error_message %}
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Error de inicio de sesión',
+        text: '{{ error_message }}',
+        confirmButtonText: 'Entendido',
+        customClass: {
+            confirmButton: 'btn btn-primary'  /* Clase personalizada */
+        },
+        buttonsStyling: false  /* Necesario para aplicar tus propios estilos */
+    });
+</script>
+{% endif %}
+{% endblock %}

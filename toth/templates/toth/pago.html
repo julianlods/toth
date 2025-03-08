@@ -1,0 +1,142 @@
+{% extends 'toth/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <ul class="nav nav-tabs" id="paymentTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="true">
+                Pagos Pendientes
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="approved-tab" data-bs-toggle="tab" data-bs-target="#approved" type="button" role="tab" aria-controls="approved" aria-selected="false">
+                Pagos Aprobados
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="rejected-tab" data-bs-toggle="tab" data-bs-target="#rejected" type="button" role="tab" aria-controls="rejected" aria-selected="false">
+                Pagos Rechazados
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3" id="paymentTabsContent">
+        <!-- Tab Pagos Pendientes -->
+        <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+            {% if pagos_pendientes %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Clase</th>
+                        <th>Monto</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pago in pagos_pendientes %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            {% if pago.clase %}
+                                {{ pago.clase.titulo }}
+                            {% else %}
+                                Sin clase asignada
+                            {% endif %}
+                        </td>
+                        <td>${{ pago.monto }}</td>
+                        <td><span class="badge bg-warning text-dark">{{ pago.estado|title }}</span></td>
+                        <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% if pago.init_point %}
+                                <a href="{{ pago.init_point }}" target="_blank" class="btn btn-success btn-sm">Pagar con MercadoPago</a>
+                            {% else %}
+                                <button class="btn btn-secondary btn-sm" disabled>No disponible</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No tenés pagos pendientes.</p>
+            {% endif %}
+        </div>
+
+        <!-- Tab Pagos Aprobados -->
+        <div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+            {% if pagos_aprobados %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Clase</th>
+                        <th>Monto</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pago in pagos_aprobados %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            {% if pago.clase %}
+                                {{ pago.clase.titulo }}
+                            {% else %}
+                                Sin clase asignada
+                            {% endif %}
+                        </td>
+                        <td>${{ pago.monto }}</td>
+                        <td><span class="badge bg-success">{{ pago.estado|title }}</span></td>
+                        <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No tenés pagos aprobados.</p>
+            {% endif %}
+        </div>
+
+        <!-- Tab Pagos Rechazados -->
+        <div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
+            {% if pagos_rechazados %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Clase</th>
+                        <th>Monto</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pago in pagos_rechazados %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            {% if pago.clase %}
+                                {{ pago.clase.titulo }}
+                            {% else %}
+                                Sin clase asignada
+                            {% endif %}
+                        </td>
+                        <td>${{ pago.monto }}</td>
+                        <td><span class="badge bg-danger">{{ pago.estado|title }}</span></td>
+                        <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No tenés pagos rechazados.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
