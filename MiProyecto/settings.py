@@ -5,6 +5,12 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://tothuser:6DVzahWZKDWzHl61DdgdWnMye51OaDPb@dpg-cv65kgogph6c73dk8s10-a.ohio-postgres.render.com/tothdb_ctvz")
+
+DATABASES = {
+    "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
+}
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-v6v33$75$5!iod698(o)k%=3%kd&7%_lom*lm$h#w*@#2(j%j@")
 
@@ -59,10 +65,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MiProyecto.wsgi.application'
 
-# Database (Cambiar SQLite por PostgreSQL en Render)
-DATABASES = {
-    "default": dj_database_url.config(default=os.getenv("DATABASE_URL"))
-}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
