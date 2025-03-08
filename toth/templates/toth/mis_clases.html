@@ -1,0 +1,47 @@
+{% extends 'toth/base.html' %}
+
+{% block title %}Mis Clases - Toth{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Listado de clases -->
+    {% if clases_con_estado %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for item in clases_con_estado %}
+                <div class="col">
+                    <div class="card shadow-lg border-0 h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title text-center text-dark fw-semibold">{{ item.clase.titulo }}</h5>
+                            <p class="card-text text-center text-muted">
+                                Profesor: <span class="text-info fw-bold">{{ item.clase.profesor.nombre }}</span>
+                            </p>
+                            <div class="mt-auto">
+                                <a href="{% url 'toth:clase_detalle' item.clase.id %}" class="btn btn-primary btn-sm w-100">Ver Detalle</a>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light text-center">
+                            {% if item.estado == "realizada" %}
+                                <small class="text-success">Estado: Realizada el {{ item.fecha_realizacion|date:"d/m/Y" }}</small>
+                                <form action="{% url 'toth:desmarcar_clase_realizada' item.clase.id %}" method="post" class="mt-2">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="delete_feedback" value="true">
+                                    <button type="submit" class="btn btn-danger btn-sm w-100">Desmarcar como Realizada</button>
+                                </form>
+                            {% else %}
+                                <form action="{% url 'toth:marcar_clase_realizada' item.clase.id %}" method="post" class="mt-2">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm w-100">Marcar como Realizada</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center">
+            No tenés clases disponibles en este momento.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
