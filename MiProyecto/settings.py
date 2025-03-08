@@ -11,12 +11,11 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-v6v33$75$5!iod698(o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-# ALLOWED_HOSTS configurado para Render
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "toth.onrender.com,127.0.0.1,localhost").split(",")
-
-# Si ALLOWED_HOSTS está vacío, usa una lista por defecto
-if not ALLOWED_HOSTS or ALLOWED_HOSTS == [""]:
-    ALLOWED_HOSTS = ["toth-oyie.onrender.com", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = [
+    "toth-oyie.onrender.com",  # Dominio correcto de Render
+    "127.0.0.1",
+    "localhost"
+]
 
 # Application definition
 INSTALLED_APPS = [
