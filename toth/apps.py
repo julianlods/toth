@@ -6,6 +6,6 @@ class TothConfig(AppConfig):
     name = 'toth'
 
     def ready(self):
-        # Habilitar claves foráneas en SQLite
-        with connection.cursor() as cursor:
-            cursor.execute("PRAGMA foreign_keys = ON;")
+        if connection.vendor == 'sqlite':  # Solo ejecutar si la BD es SQLite
+            with connection.cursor() as cursor:
+                cursor.execute("PRAGMA foreign_keys = ON;")
