@@ -12,7 +12,7 @@
                 </div>
                 <div class="card-body">
                     <p class="text-center text-muted">Comparte tus opiniones y ayuda a mejorar las futuras clases.</p>
-                    <form method="post" enctype="multipart/form-data">
+                    <form id="feedbackForm" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         
                         <div class="mb-3">
@@ -21,7 +21,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="contenido_adjunto" class="form-label">Envía un video de tu progreso al profesor</label>
+                            <label for="contenido_adjunto" class="form-label">Envía un video de tu progreso al profesor (opcional)</label>
                             {{ form_feedback.contenido_adjunto }}
                         </div>
 
@@ -31,14 +31,16 @@
                             {% if field.name|slice:":21" == "puntuacion_contenido_" %}
                                 <div class="mb-3">
                                     <label class="form-label"><strong>{{ field.label }}</strong></label>
-                                    {{ field }}
+                                    <div class="form-check">
+                                        {{ field }}
+                                    </div>
                                 </div>
                             {% endif %}
                         {% endfor %}
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-block">
-                                Enviar devolución de clase y marcala como realizada
+                            <button type="submit" class="btn btn-success btn-block" onclick="return validarFormulario()">
+                                Enviar devolución de clase y marcar como realizada
                             </button>
                         </div>
                     </form>
@@ -47,4 +49,47 @@
         </div>
     </div>
 </div>
+
+<!-- SweetAlert2 (para mejores mensajes de error) -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function validarFormulario() {
+        let comentario = document.querySelector('[name="comentario"]');
+        let puntuaciones = document.querySelectorAll('[name^="puntuacion_contenido_"]');
+        let formularioValido = true;
+        let mensajeError = "";
+
+        // Validar comentario
+        if (!comentario.value.trim()) {
+            mensajeError += "• Por favor, ingresa un comentario.<br>";
+            formularioValido = false;
+        }
+
+        // Validar puntuaciones
+        let gruposPuntuacion = new Set();
+        puntuaciones.forEach(input => gruposPuntuacion.add(input.name));
+
+        gruposPuntuacion.forEach(grupo => {
+            let opciones = document.querySelectorAll(`[name="${grupo}"]`);
+            let algunaSeleccionada = Array.from(opciones).some(opcion => opcion.checked);
+            if (!algunaSeleccionada) {
+                mensajeError += `• Debes calificar todos los contenidos.<br>`;
+                formularioValido = false;
+            }
+        });
+
+        if (!formularioValido) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error en el formulario',
+                html: mensajeError,
+                confirmButtonText: 'OK'
+            });
+            return false; // Evita que el formulario se envíe
+        }
+
+        return true; // Permite el envío del formulario si todo está bien
+    }
+</script>
 {% endblock %}

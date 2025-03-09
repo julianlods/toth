@@ -164,7 +164,15 @@ def register_view(request):
 def clase_detalle_view(request, clase_id):
     clase = get_object_or_404(Clase, id=clase_id)
     contenidos = clase.contenidos.all()
-    return render(request, 'toth/clase_detalle.html', {'clase': clase, 'contenidos': contenidos})
+
+    # Verificar si el usuario ya marcó esta clase como realizada
+    clase_realizada = ClaseRealizada.objects.filter(usuario=request.user, clase=clase).first()
+
+    return render(request, 'toth/clase_detalle.html', {
+        'clase': clase,
+        'contenidos': contenidos,
+        'clase_realizada': clase_realizada  # Pasamos la variable al template
+    })
 
 
 def logout_view(request):
