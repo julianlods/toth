@@ -179,3 +179,28 @@ class DatosPersonalesAdmin(admin.ModelAdmin):
     search_fields = ('usuario__username', 'profesor_favorito__nombre', 'lugar_origen', 'estilos_musicales_favoritos')
     list_filter = ('estilos_musicales_favoritos',)
     ordering = ('usuario',)
+
+
+@admin.register(ClaseRealizada)
+class ClaseRealizadaAdmin(admin.ModelAdmin):
+    list_display = ('usuario', 'clase', 'estado', 'fecha_realizacion')
+    search_fields = ('usuario__username', 'clase__titulo')
+    list_filter = ('estado', 'fecha_realizacion')
+
+    def usuario(self, obj):
+        return obj.usuario.username
+    usuario.short_description = "Usuario"
+
+@admin.register(FeedbackUsuario)
+class FeedbackUsuarioAdmin(admin.ModelAdmin):
+    list_display = ('get_clase', 'get_usuario', 'comentario')
+    search_fields = ('clase_realizada__usuario__username', 'clase_realizada__clase__titulo', 'comentario')
+
+    def get_clase(self, obj):
+        return obj.clase_realizada.clase.titulo  # Solo muestra el nombre de la clase
+    get_clase.short_description = 'Clase'
+
+    def get_usuario(self, obj):
+        return obj.clase_realizada.usuario.username
+    get_usuario.short_description = 'Usuario'
+

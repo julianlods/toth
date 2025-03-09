@@ -14,7 +14,7 @@
     <!-- Contenidos de la clase -->
     <h3 class="text-center mb-4 text-secondary">Contenidos</h3>
     {% if contenidos %}
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 justify-content-center">
             {% for contenido in contenidos %}
                 <div class="col">
                     <div class="card h-100 shadow-lg border-0">
@@ -62,10 +62,15 @@
         </div>
     {% endif %}
 
-    <!-- Marcar clase como realizada -->
+    <!-- Marcar o Desmarcar clase como realizada -->
     <div class="text-center mt-5">
-        {% if clase_realizada %}
-            <p class="text-muted">Esta clase ya está marcada como realizada.</p>
+        {% if clase_realizada and clase_realizada.estado == "realizada" %}
+            <small class="text-success">Esta clase fue realizada el {{ clase_realizada.fecha_realizacion|date:"d/m/Y" }}</small>
+            <form method="post" action="{% url 'toth:desmarcar_clase_realizada' clase.id %}" class="mt-2">
+                {% csrf_token %}
+                <input type="hidden" name="delete_feedback" value="true">
+                <button type="submit" class="btn btn-danger">Desmarcar como Realizada</button>
+            </form>
         {% else %}
             <form method="post" action="{% url 'toth:marcar_clase_realizada' clase.id %}">
                 {% csrf_token %}
