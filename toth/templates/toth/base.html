@@ -147,6 +147,27 @@
             <p>&copy; 2025 Toth - Project Music. Todos los derechos reservados.</p>
         </div>
     </footer>
+    <script>
+    function confirmarDesmarcar(event) {
+        event.preventDefault(); // Evita que el formulario se envíe automáticamente
+        
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Si desmarcas esta clase como realizada, se eliminarán los comentarios y archivos adjuntos enviados al profesor.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, desmarcar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                event.target.submit(); // Envía el formulario solo si el usuario confirma
+            }
+        });
+    }
+    </script>
+        
 </body>
 </html>
 

@@ -66,7 +66,7 @@
     <div class="text-center mt-5">
         {% if clase_realizada and clase_realizada.estado == "realizada" %}
             <small class="text-success">Esta clase fue realizada el {{ clase_realizada.fecha_realizacion|date:"d/m/Y" }}</small>
-            <form method="post" action="{% url 'toth:desmarcar_clase_realizada' clase.id %}" class="mt-2">
+            <form method="post" action="{% url 'toth:desmarcar_clase_realizada' clase.id %}" class="mt-2" onsubmit="confirmarDesmarcar(event)">
                 {% csrf_token %}
                 <input type="hidden" name="delete_feedback" value="true">
                 <button type="submit" class="btn btn-danger">Desmarcar como Realizada</button>
