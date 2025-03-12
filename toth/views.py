@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Case, When, Value, IntegerField
 from .models import Usuario, Inscripcion, Clase, Novedad, DatosPersonales, ClaseRealizada, FeedbackUsuario, Pago
-from .forms import UsuarioRegistroForm, EditarDatosPersonalesForm, LoginUsuarioForm, EditarPerfilForm, ContactoForm, ClaseRealizadaForm, FeedbackUsuarioForm, CustomPasswordChangeForm
+from .forms import UsuarioRegistroForm, EditarDatosPersonalesForm, LoginUsuarioForm, EditarPerfilForm, ContactoForm, ClaseRealizadaForm, FeedbackUsuarioForm, CustomPasswordChangeForm, InformarPagoForm
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.conf import settings
@@ -329,17 +329,18 @@ def desmarcar_clase_realizada(request, clase_id):
 @login_required
 def generar_pago(request):
     pagos_pendientes = Pago.objects.filter(usuario=request.user, estado="pendiente")
+    pagos_informados = Pago.objects.filter(usuario=request.user, estado="informado")  # 👈 Nuevo estado
     pagos_rechazados = Pago.objects.filter(usuario=request.user, estado="rechazado")
     pagos_aprobados = Pago.objects.filter(usuario=request.user, estado="aprobado")
 
     sdk = mercadopago.SDK(settings.MERCADO_PAGO_ACCESS_TOKEN)
 
     for pago in pagos_pendientes:
-        if pago.estado == "pendiente" and pago.init_point:  # Si el pago era rechazado y lo pasaste a pendiente, lo limpiamos
+        if pago.estado == "pendiente" and pago.init_point:
             pago.init_point = None
             pago.save()
 
-        if not pago.init_point:  # Generamos un nuevo pago solo si no tiene URL
+        if not pago.init_point:
             preference_data = {
                 "items": [
                     {
@@ -372,6 +373,7 @@ def generar_pago(request):
 
     return render(request, 'toth/pago.html', {
         "pagos_pendientes": pagos_pendientes,
+        "pagos_informados": pagos_informados,
         "pagos_rechazados": pagos_rechazados,
         "pagos_aprobados": pagos_aprobados,
     })
@@ -383,8 +385,11 @@ def pago_exitoso(request):
 def pago_fallido(request):
     return render(request, 'toth/pago_fallido.html', {"mensaje": "El pago no se pudo procesar. Inténtalo nuevamente."})
 
+
+@login_required
 def pago_pendiente(request):
-    return render(request, 'toth/pago_pendiente.html', {"mensaje": "El pago está pendiente de confirmación."})
+    messages.success(request, "Tu pago ha sido informado y está pendiente de validación.")
+    return redirect(reverse("toth:generar_pago") + "#informed")
 
 
 @csrf_exempt
@@ -431,3 +436,44 @@ def verificar_estado_pago(request, pago_id):
 
     # 🔹 En vez de redirigir al portal del usuario, volvemos a la lista de pagos en el admin
     return HttpResponseRedirect(reverse("admin:toth_pago_changelist"))
+
+
+@login_required
+def informar_pago(request, pago_id):
+    pago = get_object_or_404(Pago, id=pago_id, usuario=request.user)
+
+    if request.method == "POST":
+        form = InformarPagoForm(request.POST, request.FILES, instance=pago)
+
+        if form.is_valid():
+            pago.comprobante = form.cleaned_data["comprobante"]
+            pago.estado = "informado"  # Pasa de "pendiente" a "informado"
+            pago.metodo = "transferencia"
+            pago.save(update_fields=["comprobante", "estado", "metodo"])  # Solo actualiza estos campos
+
+            # Mensaje de éxito (NO redirecciona)
+            messages.success(request, "Tu pago ha sido informado y será revisado pronto.")
+            return render(request, "toth/informar_pago.html", {"form": form, "monto": pago.monto, "pago_id": pago.id})
+
+        else:
+            messages.error(request, "Hubo un error en el formulario. Verifica los datos.")
+
+    else:
+        form = InformarPagoForm(instance=pago)
+
+    return render(request, "toth/informar_pago.html", {
+        "form": form,
+        "monto": pago.monto,
+        "pago_id": pago.id
+    })
+
+
+@login_required
+def guardar_monto(request):
+    if request.method == "POST":
+        request.session["monto"] = request.POST.get("monto", "")
+    return HttpResponseRedirect(reverse("toth:informar_pago"))  # Redirige sin mostrar el monto en la URL
+
+
+def informar_pago_exitoso(request):
+    return render(request, "toth/informar_pago_exitoso.html")

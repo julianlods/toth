@@ -179,20 +179,31 @@ class Novedad(models.Model):
         return f"Novedad #{self.id} ({self.get_clasificacion_display()})"
 
 
-# Pagos realizados por los usuarios
 class Pago(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="pagos")
     clase = models.ForeignKey(Clase, on_delete=models.SET_NULL, null=True, blank=True, related_name="pagos")
-    metodo = models.CharField(max_length=50, default="mercado_pago")
+    metodo = models.CharField(
+        max_length=50,
+        choices=[('mercado_pago', 'Mercado Pago'), ('transferencia', 'Transferencia')],
+        default="mercado_pago"
+    )
     monto = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(
         max_length=20,
-        choices=[('pendiente', 'Pendiente'), ('aprobado', 'Aprobado'), ('rechazado', 'Rechazado')],
+        choices=[
+            ('pendiente', 'Pendiente'),
+            ('informado', 'Informado'),  
+            ('aprobado', 'Aprobado'),
+            ('rechazado', 'Rechazado')
+        ],
         default='pendiente'
     )
     fecha = models.DateTimeField(auto_now_add=True)
     init_point = models.URLField(blank=True, null=True, verbose_name="URL de MercadoPago")
+    comprobante = models.FileField(upload_to="comprobantes/", blank=True, null=True)
 
     def __str__(self):
         return f"Pago de {self.usuario.username} - {self.clase.titulo if self.clase else 'Sin clase'} ({self.estado})"
+
+
 

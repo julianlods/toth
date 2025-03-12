@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <ul class="nav nav-tabs" id="paymentTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="true">
+            <button class="nav-link" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="false">
                 Pagos Pendientes
             </button>
         </li>
@@ -18,11 +18,15 @@
                 Pagos Rechazados
             </button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="informed-tab" data-bs-toggle="tab" data-bs-target="#informed" type="button" role="tab" aria-controls="informed" aria-selected="false">
+                Pagos Informados
+            </button>
+        </li>
     </ul>
 
     <div class="tab-content mt-3" id="paymentTabsContent">
-        <!-- Tab Pagos Pendientes -->
-        <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+        <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
             {% if pagos_pendientes %}
             <table class="table table-striped">
                 <thead>
@@ -32,29 +36,25 @@
                         <th>Monto</th>
                         <th>Estado</th>
                         <th>Fecha</th>
-                        <th>Acción</th>
+                        <th>Pagar con MP</th>
+                        <th>Transferencia bancaria</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for pago in pagos_pendientes %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>
-                            {% if pago.clase %}
-                                {{ pago.clase.titulo }}
-                            {% else %}
-                                Sin clase asignada
-                            {% endif %}
-                        </td>
+                        <td>{{ pago.clase.titulo|default:"Sin clase" }}</td>
                         <td>${{ pago.monto }}</td>
                         <td><span class="badge bg-warning text-dark">{{ pago.estado|title }}</span></td>
                         <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
                         <td>
                             {% if pago.init_point %}
                                 <a href="{{ pago.init_point }}" target="_blank" class="btn btn-success btn-sm">Pagar con MercadoPago</a>
-                            {% else %}
-                                <button class="btn btn-secondary btn-sm" disabled>No disponible</button>
                             {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'toth:informar_pago' pago.id %}" class="btn btn-info btn-sm">Informar Pago</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -65,7 +65,6 @@
             {% endif %}
         </div>
 
-        <!-- Tab Pagos Aprobados -->
         <div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
             {% if pagos_aprobados %}
             <table class="table table-striped">
@@ -82,13 +81,7 @@
                     {% for pago in pagos_aprobados %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>
-                            {% if pago.clase %}
-                                {{ pago.clase.titulo }}
-                            {% else %}
-                                Sin clase asignada
-                            {% endif %}
-                        </td>
+                        <td>{{ pago.clase.titulo|default:"Sin clase" }}</td>
                         <td>${{ pago.monto }}</td>
                         <td><span class="badge bg-success">{{ pago.estado|title }}</span></td>
                         <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
@@ -101,9 +94,8 @@
             {% endif %}
         </div>
 
-        <!-- Tab Pagos Rechazados -->
-        <div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
-            {% if pagos_rechazados %}
+        <div class="tab-pane fade" id="informed" role="tabpanel" aria-labelledby="informed-tab">
+            {% if pagos_informados %}
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -115,28 +107,54 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for pago in pagos_rechazados %}
+                    {% for pago in pagos_informados %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>
-                            {% if pago.clase %}
-                                {{ pago.clase.titulo }}
-                            {% else %}
-                                Sin clase asignada
-                            {% endif %}
-                        </td>
+                        <td>{{ pago.clase.titulo|default:"Sin clase" }}</td>
                         <td>${{ pago.monto }}</td>
-                        <td><span class="badge bg-danger">{{ pago.estado|title }}</span></td>
+                        <td><span class="badge bg-info">{{ pago.estado|title }}</span></td>
                         <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
             {% else %}
-            <p>No tenés pagos rechazados.</p>
+            <p>No tenés pagos informados.</p>
             {% endif %}
         </div>
     </div>
 </div>
-{% endblock %}
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let urlParams = new URLSearchParams(window.location.search);
+    let activeTab = urlParams.get("tab") || "pending";
+    let tabElement = document.querySelector(`[data-bs-target="#${activeTab}"]`);
+    if (tabElement) {
+        new bootstrap.Tab(tabElement).show();
+    }
+});
+</script>
+
+<!-- SweetAlert2 para mostrar mensaje después de informar el pago -->
+{% if messages %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        {% for message in messages %}
+            Swal.fire({
+                icon: 'success',
+                title: 'Pago Informado',
+                text: '{{ message }}',
+                confirmButtonText: 'Entendido',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            });
+        {% endfor %}
+    });
+</script>
+{% endif %}
+
+{% endblock %}

@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import Usuario, DatosPersonales, FeedbackUsuario, ClaseRealizada, Pago, Inscripcion, Clase
 
+
 class UsuarioRegistroForm(UserCreationForm):
     username = forms.CharField(
         label="Usuario",
@@ -226,4 +227,15 @@ class PagoForm(forms.ModelForm):
                     'clase': "La clase seleccionada no está asociada al usuario seleccionado."
                 })
         return cleaned_data
+
+
+class InformarPagoForm(forms.ModelForm):
+    monto = forms.DecimalField(
+        required=False,  # 👈 Ahora NO es obligatorio
+        widget=forms.NumberInput(attrs={'step': '0.01', 'placeholder': 'Ingresa un monto diferente'})
+    )
+
+    class Meta:
+        model = Pago
+        fields = ['monto', 'comprobante']
 

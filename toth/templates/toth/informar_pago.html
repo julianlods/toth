@@ -1,0 +1,92 @@
+{% extends 'toth/base.html' %}
+
+{% block title %}Informar Pago{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Informar Pago por Transferencia</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-center text-muted">Adjunta el comprobante de tu pago para su validación.</p>
+
+                    <!-- Mostrar el monto original en texto -->
+                    <p><strong>Monto a pagar:</strong> $<span id="monto_original">{{ monto }}</span></p>
+
+                    <form method="post" enctype="multipart/form-data" id="pagoForm">
+                        {% csrf_token %}
+
+                        <!-- Campo para editar el monto si es diferente -->
+                        <div class="mb-3">
+                            <label for="monto_editado" class="form-label">Monto informado (solo si es diferente)</label>
+                            <input type="number" step="0.01" class="form-control" id="monto_editado" name="monto" placeholder="Ingresa un monto diferente">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.comprobante.id_for_label }}" class="form-label">Adjuntar Comprobante</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="{{ form.comprobante.id_for_label }}" name="{{ form.comprobante.name }}" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-block">Enviar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SweetAlert2 para la validación -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("pagoForm");
+    var montoOriginalElement = document.getElementById("monto_original");
+    var montoEditadoElement = document.getElementById("monto_editado");
+
+    form.addEventListener("submit", function(event) {
+        var montoOriginal = parseFloat(montoOriginalElement.textContent.replace(",", "."));
+        var montoEditadoInput = montoEditadoElement.value.trim();
+        var montoEditado = montoEditadoInput ? parseFloat(montoEditadoInput.replace(",", ".")) : null;
+
+        // Si el monto ingresado es el mismo, se bloquea el envío del formulario.
+        if (!isNaN(montoEditado) && montoOriginal === montoEditado) {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Monto inválido',
+                text: 'Si el monto es el mismo, déjalo vacío.',
+                confirmButtonText: 'Entendido',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            });
+        }
+    });
+
+    // SweetAlert para mostrar mensaje después de enviar el pago.
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                icon: 'success',
+                title: 'Pago Informado',
+                text: '{{ message }}',
+                confirmButtonText: 'Entendido',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            });
+        {% endfor %}
+    {% endif %}
+});
+</script>
+
+{% endblock %}

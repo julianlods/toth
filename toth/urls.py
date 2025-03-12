@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views  # Importa el módulo completo de vistas
 from toth.views import verificar_estado_pago
+from .views import informar_pago, guardar_monto
 
 app_name = 'toth'
 
@@ -22,4 +23,7 @@ urlpatterns = [
     path('pago-pendiente/', views.pago_pendiente, name='pago_pendiente'),
     path('verificar_pago/<int:pago_id>/', verificar_estado_pago, name='verificar_estado_pago'),
     path('api/get-clases/<int:usuario_id>/', views.get_clases, name='get_clases'),
+    path("informar-pago/<int:pago_id>/", informar_pago, name="informar_pago"),
+    path("informar-pago-exitoso/", views.informar_pago_exitoso, name="informar_pago_exitoso"),
+    path("guardar-monto/", guardar_monto, name="guardar_monto"),
 ]

@@ -1,0 +1,13 @@
+{% extends 'toth/base.html' %}
+
+{% block title %}Pago Informado{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-success text-center">
+        <h4>¡Pago Informado con Éxito!</h4>
+        <p>Tu pago ha sido informado y será revisado pronto.</p>
+        <a href="{% url 'toth:generar_pago' %}?tab=informed" class="btn btn-primary">Ver Pagos Informados</a>
+    </div>
+</div>
+{% endblock %}

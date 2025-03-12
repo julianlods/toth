@@ -9,3 +9,6 @@ urlpatterns = [
     path('', include('toth.urls')),
     path('get_clases/', views.get_clases, name='get_clases'),  # Esto depende de la función get_clases
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

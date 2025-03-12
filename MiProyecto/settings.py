@@ -15,7 +15,7 @@ DATABASES = {
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-v6v33$75$5!iod698(o)k%=3%kd&7%_lom*lm$h#w*@#2(j%j@")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = True  # 👈 Activa el modo depuración
 
 ALLOWED_HOSTS = [
     "toth-oyie.onrender.com",  # Dominio correcto de Render
@@ -65,21 +65,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MiProyecto.wsgi.application'
 
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # Internationalization
@@ -99,7 +90,11 @@ STATICFILES_DIRS = [
 
 # Configuración de archivos subidos por usuarios
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Asegurar que Render sirva archivos media correctamente
+if not DEBUG:
+    MEDIA_URL = "https://toth-oyie.onrender.com/media/"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

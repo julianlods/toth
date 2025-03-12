@@ -1,2 +1,9 @@
-<h2>{{ mensaje }}</h2>
-<a href="/" class="btn btn-secondary">Volver al inicio</a>
+{% extends 'toth/base.html' %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2>Tu pago ha sido informado.</h2>
+    <p>Será revisado por un administrador y recibirás una notificación cuando sea aprobado.</p>
+    <a href="{% url 'home' %}" class="btn btn-secondary">Volver al inicio</a>
+</div>
+{% endblock %}

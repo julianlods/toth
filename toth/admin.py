@@ -3,6 +3,7 @@ from django import forms
 from .models import Usuario, Profesor, CategoriaContenido, Contenido, Clase, Inscripcion, DatosPersonales, Novedad, FeedbackUsuario, ClaseRealizada, Pago
 from django.utils.html import format_html
 from django.urls import reverse, NoReverseMatch
+from .forms import PagoForm
 
 
 # Formulario personalizado para Pago
@@ -50,12 +51,12 @@ class PagoForm(forms.ModelForm):
 @admin.register(Pago)
 class PagoAdmin(admin.ModelAdmin):
     form = PagoForm
-    list_display = ('id', 'usuario', 'clase', 'metodo', 'monto', 'estado', 'fecha', 'verificar_estado')
+    list_display = ('id', 'usuario', 'clase', 'metodo', 'monto', 'estado', 'fecha', 'ver_comprobante', 'verificar_estado')
     list_filter = ('estado', 'metodo', 'fecha')
     search_fields = ('id', 'usuario__username', 'usuario__email', 'clase__titulo')
     ordering = ('-fecha',)
-    fields = ('id', 'usuario', 'clase', 'metodo', 'monto', 'estado')
-    readonly_fields = ('id',)
+    fields = ('id', 'usuario', 'clase', 'metodo', 'monto', 'estado', 'ver_comprobante')
+    readonly_fields = ('id', 'ver_comprobante')
 
     class Media:
         js = ('admin/js/pago_dynamic_clases.js',)
@@ -70,9 +71,18 @@ class PagoAdmin(admin.ModelAdmin):
         except NoReverseMatch:
             return "URL no encontrada"
 
+    def ver_comprobante(self, obj):
+        if obj.comprobante:
+            return format_html('<a href="{}" target="_blank" style="color: green; font-weight: bold;">Ver Comprobante</a>', obj.comprobante.url)
+        return format_html('<span style="color: red;">No adjuntado</span>')
+    ver_comprobante.short_description = "Comprobante"
+
     def save_model(self, request, obj, form, change):
-        if 'estado' in form.changed_data and obj.estado == "pendiente":
-            obj.init_point = None
+        if 'estado' in form.changed_data:
+            if obj.estado == "pendiente":
+                obj.init_point = None
+            elif obj.estado == "informado":  # 👈 Si pasa a "Informado", queda registrado así
+                obj.estado = "informado"
         super().save_model(request, obj, form, change)
 
 
