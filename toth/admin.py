@@ -1,12 +1,11 @@
 from django.contrib import admin
 from django import forms
-from .models import Usuario, Profesor, CategoriaContenido, Contenido, Clase, Inscripcion, DatosPersonales, Novedad, FeedbackUsuario, ClaseRealizada, Pago
 from django.utils.html import format_html
 from django.urls import reverse, NoReverseMatch
+from .models import Usuario, Profesor, CategoriaContenido, Contenido, Clase, Inscripcion, DatosPersonales, Novedad, FeedbackUsuario, ClaseRealizada, Pago
 from .forms import PagoForm
 
 
-# Formulario personalizado para Pago
 class PagoForm(forms.ModelForm):
     class Meta:
         model = Pago
@@ -81,9 +80,33 @@ class PagoAdmin(admin.ModelAdmin):
         if 'estado' in form.changed_data:
             if obj.estado == "pendiente":
                 obj.init_point = None
-            elif obj.estado == "informado":  # 👈 Si pasa a "Informado", queda registrado así
+            elif obj.estado == "informado":
                 obj.estado = "informado"
         super().save_model(request, obj, form, change)
+
+    # Filtrar pagos en el menú lateral del admin
+    def changelist_view(self, request, extra_context=None):
+        if not extra_context:
+            extra_context = {}
+
+        extra_context['custom_menu'] = [
+            {
+                "title": "Pagos Informados",
+                "url": "?estado=informado",
+                "description": "Pagos que han sido reportados pero no verificados."
+            },
+            {
+                "title": "Pagos Aceptados",
+                "url": "?estado=aceptado",
+                "description": "Pagos que han sido aprobados."
+            },
+            {
+                "title": "Pagos Pendientes",
+                "url": "?estado=pendiente",
+                "description": "Pagos que aún están pendientes de verificación."
+            }
+        ]
+        return super().changelist_view(request, extra_context=extra_context)
 
 
 @admin.register(Clase)
