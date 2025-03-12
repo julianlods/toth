@@ -14,8 +14,8 @@ DATABASES = {
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-v6v33$75$5!iod698(o)k%=3%kd&7%_lom*lm$h#w*@#2(j%j@")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # 👈 Activa el modo depuración
+# Configuración dinámica de DEBUG
+DEBUG = os.getenv("DEBUG", "True") == "True" if os.getenv("ENV") == "local" else False
 
 ALLOWED_HOSTS = [
     "toth-oyie.onrender.com",  # Dominio correcto de Render
