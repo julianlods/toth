@@ -90,11 +90,14 @@ STATICFILES_DIRS = [
 
 # Configuración de archivos subidos por usuarios
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Asegurar que Render sirva archivos media correctamente
-if not DEBUG:
+if "RENDER" in os.environ:
     MEDIA_URL = "https://toth-oyie.onrender.com/media/"
+else:
+    MEDIA_URL = "/media/"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

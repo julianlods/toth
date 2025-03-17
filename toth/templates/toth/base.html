@@ -91,11 +91,10 @@
                         <a class="nav-link {% if request.resolver_match.url_name == 'generar_pago' %}active{% endif %}" href="{% url 'toth:generar_pago' %}">Mis Pagos</a>
                     </li>
                     {% if user.is_authenticated %}
-                        <li class="nav-item d-flex align-items-center">
                             {% if user.datos_personales.avatar %}
                                 <img src="{{ user.datos_personales.avatar.url }}" alt="Avatar de {{ user.username }}" class="navbar-avatar">
                             {% else %}
-                                <img src="/media/avatars/default_avatar.png" alt="Avatar por defecto" class="navbar-avatar">
+                                <img src="{% static 'toth/images/default_avatar.png' %}" alt="Avatar por defecto" class="navbar-avatar">
                             {% endif %}
                         </li>
                         <li class="nav-item dropdown">
