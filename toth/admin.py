@@ -153,9 +153,11 @@ class ClaseChoiceField(forms.ModelChoiceField):
 
 @admin.register(Inscripcion)
 class InscripcionAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'clase_con_descripcion', 'fecha_inscripcion')
+    list_display = ('usuario', 'clase_con_descripcion', 'orden', 'fecha_inscripcion')
+    list_editable = ('orden',)  # Ahora se puede editar el orden desde el admin
     search_fields = ('usuario__username', 'clase__titulo', 'clase__descripcion')
     list_filter = ('fecha_inscripcion',)
+    ordering = ('orden', 'fecha_inscripcion')  # Aplica el orden al mostrar las inscripciones
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)

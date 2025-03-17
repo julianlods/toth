@@ -63,7 +63,7 @@ def index_view(request):
 
 def mis_clases_view(request):
     if request.user.is_authenticated:
-        inscripciones = Inscripcion.objects.filter(usuario=request.user).select_related('clase', 'clase__profesor')
+        inscripciones = Inscripcion.objects.filter(usuario=request.user).select_related('clase', 'clase__profesor').order_by('orden', 'fecha_inscripcion')
         clases = [inscripcion.clase for inscripcion in inscripciones]
         clases_realizadas = ClaseRealizada.objects.filter(usuario=request.user)
 

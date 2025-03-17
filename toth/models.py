@@ -89,14 +89,17 @@ class Clase(models.Model):
         return self.titulo
 
 
-# Inscripciones de los usuarios a las clases
 class Inscripcion(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='inscripciones')
     clase = models.ForeignKey(Clase, on_delete=models.CASCADE, related_name='inscripciones')
     fecha_inscripcion = models.DateTimeField(auto_now_add=True)
+    orden = models.PositiveIntegerField(null=True, blank=True, verbose_name="Orden")
+
+    class Meta:
+        ordering = ['orden', 'fecha_inscripcion']  # Ordena primero por orden manual, luego por fecha
 
     def __str__(self):
-        return f"{self.usuario.username} inscrito en {self.clase.titulo}"
+        return f"{self.usuario.username} - {self.clase.titulo}"
 
 
 # Registro de clases realizadas por los usuarios
