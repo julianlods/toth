@@ -94,6 +94,36 @@
             {% endif %}
         </div>
 
+        <div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
+            {% if pagos_rechazados %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Clase</th>
+                        <th>Monto</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pago in pagos_rechazados %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ pago.clase.titulo|default:"Sin clase" }}</td>
+                        <td>${{ pago.monto }}</td>
+                        <td><span class="badge bg-danger">{{ pago.estado|title }}</span></td>
+                        <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No tenés pagos rechazados.</p>
+            {% endif %}
+        </div>
+
+
         <div class="tab-pane fade" id="informed" role="tabpanel" aria-labelledby="informed-tab">
             {% if pagos_informados %}
             <table class="table table-striped">
