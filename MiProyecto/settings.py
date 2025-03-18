@@ -115,8 +115,11 @@ AUTHENTICATION_BACKENDS = [
 SESSION_COOKIE_SECURE = False  # Cambiar a True en producción con HTTPS
 CSRF_COOKIE_SECURE = False     # Cambiar a True en producción con HTTPS
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Expira al cerrar el navegador
-SESSION_COOKIE_AGE = 3600  # 1 hora
+
+# Mantener la sesión iniciada aunque se cierre el navegador
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # No expira al cerrar el navegador
+SESSION_COOKIE_AGE = 1209600  # 2 semanas en segundos (ajustable)
+SESSION_SAVE_EVERY_REQUEST = True  # Renueva la sesión en cada request
 
 # Redirección después de cerrar sesión
 LOGOUT_REDIRECT_URL = '/'
