@@ -144,7 +144,15 @@ LOGGING = {
 }
 
 # Configuración del backend de correo para pruebas
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Tu correo de Gmail
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # La App Password de Google
+
+DEFAULT_CONTACT_EMAIL = 'julian.lods@gmail.com'
+
 
 # Dirección de correo predeterminada para contacto
 DEFAULT_CONTACT_EMAIL = 'julian.lods@gmail.com'

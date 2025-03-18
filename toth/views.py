@@ -105,16 +105,19 @@ def contacto_view(request):
             email = form.cleaned_data['email']
             mensaje = form.cleaned_data['mensaje']
 
-            # Simular envío de correo electrónico
+            # Enviar correo
             asunto = f"Consulta de {nombre}"
             cuerpo = f"Mensaje de {nombre} <{email}>:\n\n{mensaje}"
             destinatario = settings.DEFAULT_CONTACT_EMAIL
-            send_mail(asunto, cuerpo, email, [destinatario])
 
-            # Pasar el mensaje de éxito al contexto
+            send_mail(
+                asunto, cuerpo, settings.EMAIL_HOST_USER, [destinatario],
+                fail_silently=False
+            )
+
             return render(request, 'toth/contacto.html', {
                 'form': ContactoForm(),
-                'success_message': "¡Tu mensaje ha sido enviado con éxito! A la brevedad nos pondremos en contacto."
+                'success_message': "¡Tu mensaje ha sido enviado con éxito!"
             })
     else:
         form = ContactoForm()
