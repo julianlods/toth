@@ -15,13 +15,22 @@
                             <p class="card-text text-center text-muted">
                                 Profesor: <span class="text-info fw-bold">{{ item.clase.profesor.nombre }}</span>
                             </p>
+
+                            <!-- Sección para mostrar el estado con un espacio reservado -->
+                            <div class="text-center mb-2">
+                                {% if item.estado == "realizada" %}
+                                    <small class="text-success">Estado: Realizada el {{ item.fecha_realizacion|date:"d/m/Y" }}</small>
+                                {% else %}
+                                    <small class="text-muted" style="visibility: hidden;">Estado: Pendiente</small>
+                                {% endif %}
+                            </div>
+
                             <div class="mt-auto">
                                 <a href="{% url 'toth:clase_detalle' item.clase.id %}" class="btn btn-primary btn-sm w-100">Ver Detalle</a>
                             </div>
                         </div>
                         <div class="card-footer bg-light text-center">
                             {% if item.estado == "realizada" %}
-                                <small class="text-success">Estado: Realizada el {{ item.fecha_realizacion|date:"d/m/Y" }}</small>
                                 <form action="{% url 'toth:desmarcar_clase_realizada' item.clase.id %}" method="post" class="mt-2" onsubmit="confirmarDesmarcar(event)">
                                     {% csrf_token %}
                                     <input type="hidden" name="delete_feedback" value="true">
