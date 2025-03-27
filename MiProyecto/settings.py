@@ -18,7 +18,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-v6v33$75$5!iod698(o
 DEBUG = os.getenv("DEBUG", "True") == "True" if os.getenv("ENV") == "local" else False
 
 ALLOWED_HOSTS = [
-    "toth-oyie.onrender.com",  # Dominio correcto de Render
+    "toth-project.onrender.com",  # Dominio correcto de Render
     "127.0.0.1",
     "localhost"
 ]
@@ -95,7 +95,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Asegurar que Render sirva archivos media correctamente
 if "RENDER" in os.environ:
-    MEDIA_URL = "https://toth-oyie.onrender.com/media/"
+    MEDIA_URL = "https://toth-project.onrender.com/media/"
 else:
     MEDIA_URL = "/media/"
 
