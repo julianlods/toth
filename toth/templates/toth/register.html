@@ -3,9 +3,10 @@
 {% block title %}Registro - Toth{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 mb-5 pb-5">
+
     <!-- Encabezado -->
-    <h2 class="text-center mb-4 text-light bg-success p-3 rounded shadow-lg">Registro</h2>
+    <h3 class="text-center mb-4 text-light bg-success p-3 px-5 rounded shadow-lg">Registro</h3>
 
     <!-- Formulario de registro -->
     <form method="post" class="row g-4">
@@ -29,7 +30,7 @@
 
         <!-- Botón registrarse -->
         <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary btn-lg">Registrarse</button>
+            <button type="submit" class="btn btn-success btn-lg w-100">Registrarse</button>
         </div>
     </form>
 </div>
@@ -43,7 +44,7 @@
         text: '{{ success_message }}',
         confirmButtonText: 'Aceptar',
         customClass: {
-            confirmButton: 'btn btn-primary'
+            confirmButton: 'btn btn-success'
         },
         buttonsStyling: false
     });
@@ -58,7 +59,7 @@
         text: '{{ error_message }}',
         confirmButtonText: 'Revisar',
         customClass: {
-            confirmButton: 'btn btn-primary'
+            confirmButton: 'btn btn-success'
         },
         buttonsStyling: false
     });

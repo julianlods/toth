@@ -1,8 +1,8 @@
 {% extends 'toth/base.html' %}
 
 {% block content %}
-<div class="container mt-5" style="max-width: 720px;">
-    <h3 class="text-center mb-4 text-light bg-success py-2 px-3 rounded shadow">Editar Perfil</h3>
+<div class="container mt-5 mb-5" style="max-width: 720px;">
+    <h3 class="text-center mb-4 text-light bg-success py-2 px-4 rounded shadow-lg">Editar Perfil</h3>
 
     <!-- Navegación de pestañas -->
     <ul class="nav nav-tabs" id="editProfileTabs" role="tablist">
@@ -26,7 +26,7 @@
                 <input type="hidden" name="form_type" value="contact_form">
                 <h4 class="text-secondary">Información de Contacto</h4>
                 {{ user_form.as_p }}
-                <button type="submit" class="btn btn-primary w-100 mt-4">Guardar cambios</button>
+                <button type="submit" class="btn btn-success w-100 mt-4">Guardar cambios</button>
             </form>
         </div>
 
@@ -37,7 +37,7 @@
                 <input type="hidden" name="form_type" value="personal_form">
                 <h4 class="text-secondary">Datos Personales</h4>
                 {{ datos_form.as_p }}
-                <button type="submit" class="btn btn-primary w-100 mt-4">Guardar cambios</button>
+                <button type="submit" class="btn btn-success w-100 mt-4">Guardar cambios</button>
             </form>
         </div>
 
@@ -49,12 +49,13 @@
                 <h4 class="text-secondary">Cambiar Contraseña</h4>
                 {{ password_form.as_p }}
                 <p class="text-muted">Completa los campos solo si deseas cambiar tu contraseña.</p>
-                <button type="submit" class="btn btn-primary w-100 mt-4">Actualizar contraseña</button>
+                <button type="submit" class="btn btn-success w-100 mt-4">Actualizar contraseña</button>
             </form>
         </div>
     </div>
 
-    <div class="mt-3">
+    <!-- Botón Cancelar con espacio correcto respecto al footer -->
+    <div class="mt-4" style="margin-bottom: 60px;">
         <a href="#" class="btn btn-secondary w-100">Cancelar</a>
     </div>
 </div>
@@ -76,5 +77,4 @@
     {% endfor %}
 </script>
 {% endif %}
-
 {% endblock %}
