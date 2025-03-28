@@ -60,6 +60,10 @@
             font-weight: bold;
             color: #b3b3b3 !important; /* Un gris más claro para que resalte sin ser llamativo */
         }
+
+        html {
+            overflow-y: scroll;
+        }
     </style>
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'toth/images/favicon.ico' %}" type="image/x-icon">
@@ -140,11 +144,26 @@
         {% block content %}
         {% endblock %}
     </main>
-    <footer class="bg-dark text-white text-center py-1 d-flex align-items-center justify-content-center">
+    
+    <footer style="background-color: #212529; color: white; text-align: center; padding: 10px 0; font-size: 13px; position: fixed; bottom: 0; width: 100%;">
         <div class="container">
-            <p class="m-0">&copy; 2025 Toth - Project Music. Todos los derechos reservados.</p>
+            <div>&copy; 2025 Toth - Project Music. Todos los derechos reservados.</div>
+            <div class="mt-1">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'toth:index' %}" class="text-white text-decoration-none">Inicio</a> |
+                    <a href="{% url 'toth:mis_clases' %}" class="text-white text-decoration-none">Mis Clases</a> |
+                    <a href="{% url 'toth:generar_pago' %}" class="text-white text-decoration-none">Mis Pagos</a> |
+                    <a href="{% url 'toth:perfil' %}" class="text-white text-decoration-none">Mi Perfil</a> |
+                    <a href="{% url 'toth:contacto' %}" class="text-white text-decoration-none">Contacto</a>
+                {% else %}
+                    <a href="{% url 'toth:index' %}" class="text-white text-decoration-none">Inicio</a> |
+                    <a href="{% url 'toth:login' %}" class="text-white text-decoration-none">Iniciar sesión</a> |
+                    <a href="{% url 'toth:contacto' %}" class="text-white text-decoration-none">Contacto</a>
+                {% endif %}
+            </div>
         </div>
     </footer>
+
     <script>
     function confirmarDesmarcar(event) {
         event.preventDefault(); // Evita que el formulario se envíe automáticamente

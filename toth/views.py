@@ -186,7 +186,7 @@ def logout_view(request):
 @login_required
 def perfil_view(request):
     user = request.user
-    datos_personales = DatosPersonales.objects.get(usuario=user)
+    datos_personales, _ = DatosPersonales.objects.get_or_create(usuario=user)
 
     user_form = EditarPerfilForm(instance=user)
     datos_form = EditarDatosPersonalesForm(instance=datos_personales)
