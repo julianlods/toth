@@ -24,7 +24,6 @@
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="hidden" name="form_type" value="contact_form">
-                <h4 class="text-secondary">Información de Contacto</h4>
                 {{ user_form.as_p }}
                 <button type="submit" class="btn btn-success w-100 mt-4">Guardar cambios</button>
             </form>
@@ -35,7 +34,6 @@
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="hidden" name="form_type" value="personal_form">
-                <h4 class="text-secondary">Datos Personales</h4>
                 {{ datos_form.as_p }}
                 <button type="submit" class="btn btn-success w-100 mt-4">Guardar cambios</button>
             </form>
@@ -46,7 +44,6 @@
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="form_type" value="password_form">
-                <h4 class="text-secondary">Cambiar Contraseña</h4>
                 {{ password_form.as_p }}
                 <p class="text-muted">Completa los campos solo si deseas cambiar tu contraseña.</p>
                 <button type="submit" class="btn btn-success w-100 mt-4">Actualizar contraseña</button>
