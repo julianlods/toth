@@ -7,12 +7,11 @@
 <div class="container mt-5">
     <!-- Detalle de la clase -->
     <div class="text-center mb-5">
-        <h2 class="display-4 text-primary fw-bold">{{ clase.titulo }}</h2>
         <p class="lead text-muted">{{ clase.descripcion }}</p>
     </div>
+    
 
     <!-- Contenidos de la clase -->
-    <h3 class="text-center mb-4 text-secondary">Contenidos</h3>
     {% if contenidos %}
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 justify-content-center">
             {% for contenido in contenidos %}
