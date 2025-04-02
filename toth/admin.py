@@ -187,6 +187,13 @@ class ContenidoAdmin(admin.ModelAdmin):
     search_fields = ('titulo',)
     list_filter = ('categoria',)
 
+    def save_model(self, request, obj, form, change):
+        # Convertir shorts de YouTube a enlaces normales
+        if obj.video_url and "youtube.com/shorts/" in obj.video_url:
+            video_id = obj.video_url.split("youtube.com/shorts/")[-1].split("?")[0].split("/")[0]
+            obj.video_url = f"https://www.youtube.com/watch?v={video_id}"
+        super().save_model(request, obj, form, change)
+
 
 @admin.register(Novedad)
 class NovedadAdmin(admin.ModelAdmin):
