@@ -1,15 +1,30 @@
 import os
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://tothuser:6DVzahWZKDWzHl61DdgdWnMye51OaDPb@dpg-cv65kgogph6c73dk8s10-a.ohio-postgres.render.com/tothdb_ctvz")
+ENVIRONMENT = os.getenv("ENV", "production")
 
-DATABASES = {
-    "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
-}
+if ENVIRONMENT == "local":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    DATABASES = {
+        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
+    }
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-v6v33$75$5!iod698(o)k%=3%kd&7%_lom*lm$h#w*@#2(j%j@")
@@ -31,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
     'toth',  # Agrega tu app personalizada
 ]
 
@@ -163,3 +180,13 @@ DEFAULT_CONTACT_EMAIL = 'julian.lods@gmail.com'
 # Configuración de MercadoPago
 MERCADO_PAGO_ACCESS_TOKEN = "TEST-903676059026218-030618-7a178f9b228f0ec9e351e5edf13679bd-281041896"
 MERCADO_PAGO_PUBLIC_KEY = "TEST-9cbf6f2e-602a-4b92-8ee3-bcf82321ad91"
+
+
+# Storage backend de Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
