@@ -14,6 +14,11 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    def save(self, *args, **kwargs):
+        self.username = self.username.lower()
+        self.email = self.email.lower()
+        super().save(*args, **kwargs)
 
 
 # Clase para los profesores

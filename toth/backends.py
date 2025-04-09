@@ -6,8 +6,13 @@ Usuario = get_user_model()
 
 class AuthBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
+        if not username:
+            return None
+
+        username = username.lower()
+
         try:
-            user = Usuario.objects.get(Q(username=username) | Q(email=username))
+            user = Usuario.objects.get(Q(username__iexact=username) | Q(email__iexact=username))
         except Usuario.DoesNotExist:
             return None
 

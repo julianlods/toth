@@ -24,13 +24,7 @@ def login_view(request):
         password = request.POST.get('password')
 
         # Autenticar por email o username
-        user = authenticate(request, username=username_or_email, password=password)
-        if not user:
-            try:
-                user_obj = Usuario.objects.get(Q(email=username_or_email))
-                user = authenticate(request, username=user_obj.username, password=password)
-            except Usuario.DoesNotExist:
-                user = None
+        user = authenticate(request, username=username_or_email.lower(), password=password)
 
         if user is not None:
             login(request, user)
@@ -131,36 +125,57 @@ def register_view(request):
         datos_form = EditarDatosPersonalesForm(request.POST, request.FILES)
 
         if user_form.is_valid() and datos_form.is_valid():
-            # Guardar el usuario
-            usuario = user_form.save()
+            username = user_form.cleaned_data['username'].lower()
+            email = user_form.cleaned_data['email'].lower()
 
-            # Guardar los datos personales relacionados
+            # Validar duplicados ignorando mayúsculas
+            if Usuario.objects.filter(username__iexact=username).exists():
+                return render(request, 'toth/register.html', {
+                    'user_form': user_form,
+                    'datos_form': datos_form,
+                    'error_message': 'Ese nombre de usuario ya está en uso.'
+                })
+            elif Usuario.objects.filter(email__iexact=email).exists():
+                return render(request, 'toth/register.html', {
+                    'user_form': user_form,
+                    'datos_form': datos_form,
+                    'error_message': 'Ese correo electrónico ya está registrado.'
+                })
+
+            # Guardar el usuario normalizado
+            usuario = user_form.save(commit=False)
+            usuario.username = username
+            usuario.email = email
+            usuario.set_password(request.POST['password1'])
+            usuario.save()
+
+            # Guardar datos personales
             datos_personales = datos_form.save(commit=False)
             datos_personales.usuario = usuario
             datos_personales.save()
 
-            # Autenticar al usuario para obtener el backend
-            usuario = authenticate(username=usuario.username, password=request.POST['password1'])
-
-            # Iniciar sesión con el backend explícito
+            # Autenticar y loguear
+            usuario = authenticate(username=username, password=request.POST['password1'])
             if usuario is not None:
                 login(request, usuario)
 
-            # Redirigir al usuario a su página principal o donde desees
             return redirect('toth:mis_clases')
 
         else:
-            # Pasar mensaje de error al contexto
             return render(request, 'toth/register.html', {
                 'user_form': user_form,
                 'datos_form': datos_form,
                 'error_message': 'Por favor corrige los errores en el formulario.'
             })
+
     else:
         user_form = UsuarioRegistroForm()
         datos_form = EditarDatosPersonalesForm()
 
-    return render(request, 'toth/register.html', {'user_form': user_form, 'datos_form': datos_form})
+    return render(request, 'toth/register.html', {
+        'user_form': user_form,
+        'datos_form': datos_form
+    })
 
 
 @login_required
