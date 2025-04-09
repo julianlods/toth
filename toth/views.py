@@ -203,9 +203,11 @@ def perfil_view(request):
     user = request.user
     datos_personales, _ = DatosPersonales.objects.get_or_create(usuario=user)
 
-    user_form = EditarPerfilForm(instance=user)
+    # Si los formularios se guardaron bien, recargarlos para que reflejen los nuevos valores
+    user_form = EditarPerfilForm(instance=request.user)
     datos_form = EditarDatosPersonalesForm(instance=datos_personales)
     password_form = CustomPasswordChangeForm(user=user)
+
 
     if request.method == 'POST':
         form_type = request.POST.get('form_type')
@@ -230,10 +232,15 @@ def perfil_view(request):
             password_form = CustomPasswordChangeForm(user=user, data=request.POST)
             if password_form.is_valid():
                 password_form.save()
-                update_session_auth_hash(request, user)  # Mantener la sesión activa
+                update_session_auth_hash(request, user)
                 messages.success(request, '¡Tu contraseña se ha actualizado con éxito!')
             else:
                 messages.error(request, 'Por favor corrige los errores en el formulario de contraseña.')
+
+        # 🔁 Refrescar formularios con los datos actualizados
+        user_form = EditarPerfilForm(instance=request.user)
+        datos_form = EditarDatosPersonalesForm(instance=datos_personales)
+        password_form = CustomPasswordChangeForm(user=user)
 
     return render(request, 'toth/perfil.html', {
         'user_form': user_form,
