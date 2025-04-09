@@ -110,12 +110,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-# Asegurar que Render sirva archivos media correctamente
-if "RENDER" in os.environ:
-    MEDIA_URL = "https://toth-project.onrender.com/media/"
-else:
-    MEDIA_URL = "/media/"
-
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -178,15 +172,15 @@ DEFAULT_CONTACT_EMAIL = 'julian.lods@gmail.com'
 DEFAULT_CONTACT_EMAIL = 'julian.lods@gmail.com'
 
 # Configuración de MercadoPago
-MERCADO_PAGO_PUBLIC_KEY = "APP_USR-354523ba-91bc-468f-864e-da1f8cb8125c"
-MERCADO_PAGO_ACCESS_TOKEN = "APP_USR-922738124339043-040816-2690f6960321f956f0ce705a494a547b-21488302"
+MERCADO_PAGO_PUBLIC_KEY = os.getenv("MERCADO_PAGO_PUBLIC_KEY")
+MERCADO_PAGO_ACCESS_TOKEN = os.getenv("MERCADO_PAGO_ACCESS_TOKEN")
 
 
-# Storage backend de Cloudinary
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
-}
+if os.getenv("FORCE_CLOUDINARY") == "True":
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+        'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+        'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+    }
