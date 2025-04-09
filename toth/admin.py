@@ -14,47 +14,37 @@ class PagoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.instance and self.instance.pk:
-            usuario = self.instance.usuario
-            if usuario:
-                self.fields['clase'].queryset = Clase.objects.filter(
-                    id__in=Inscripcion.objects.filter(usuario=usuario).values_list('clase_id', flat=True)
-                )
-        elif 'usuario' in self.data:
-            try:
-                usuario_id = int(self.data.get('usuario'))
-                self.fields['clase'].queryset = Clase.objects.filter(
-                    id__in=Inscripcion.objects.filter(usuario_id=usuario_id).values_list('clase_id', flat=True)
-                )
-            except (ValueError, TypeError):
+        # Ocultar y desactivar validación solo si el campo existe
+        if 'clase' in self.fields:
+            self.fields['clase'].required = False
+            self.fields['clase'].widget = forms.HiddenInput()
+
+            if self.instance and self.instance.pk:
+                usuario = self.instance.usuario
+                if usuario:
+                    self.fields['clase'].queryset = Clase.objects.filter(
+                        id__in=Inscripcion.objects.filter(usuario=usuario).values_list('clase_id', flat=True)
+                    )
+            elif 'usuario' in self.data:
+                try:
+                    usuario_id = int(self.data.get('usuario'))
+                    self.fields['clase'].queryset = Clase.objects.filter(
+                        id__in=Inscripcion.objects.filter(usuario_id=usuario_id).values_list('clase_id', flat=True)
+                    )
+                except (ValueError, TypeError):
+                    self.fields['clase'].queryset = Clase.objects.none()
+            else:
                 self.fields['clase'].queryset = Clase.objects.none()
-        else:
-            self.fields['clase'].queryset = Clase.objects.none()
-
-    def clean(self):
-        cleaned_data = super().clean()
-        usuario = cleaned_data.get('usuario')
-        clase = cleaned_data.get('clase')
-
-        if clase and usuario:
-            clases_usuario = Clase.objects.filter(
-                id__in=Inscripcion.objects.filter(usuario=usuario).values_list('clase_id', flat=True)
-            )
-            if clase not in clases_usuario:
-                raise forms.ValidationError({
-                    'clase': "La clase seleccionada no está asociada al usuario seleccionado."
-                })
-        return cleaned_data
 
 
 @admin.register(Pago)
 class PagoAdmin(admin.ModelAdmin):
     form = PagoForm
-    list_display = ('id', 'usuario', 'clase', 'metodo', 'monto', 'estado', 'fecha', 'ver_comprobante', 'verificar_estado')
+    list_display = ('id', 'usuario', 'metodo', 'monto', 'estado', 'fecha', 'ver_comprobante', 'verificar_estado')
     list_filter = ('estado', 'metodo', 'fecha')
     search_fields = ('id', 'usuario__username', 'usuario__email', 'clase__titulo')
     ordering = ('-fecha',)
-    fields = ('id', 'usuario', 'clase', 'metodo', 'monto', 'estado', 'ver_comprobante')
+    fields = ('id', 'usuario', 'metodo', 'monto', 'estado', 'ver_comprobante')
     readonly_fields = ('id', 'ver_comprobante')
 
     class Media:
