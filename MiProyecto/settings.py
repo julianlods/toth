@@ -177,6 +177,8 @@ MERCADO_PAGO_ACCESS_TOKEN = os.getenv("MERCADO_PAGO_ACCESS_TOKEN")
 
 
 if os.getenv("FORCE_CLOUDINARY", "").lower() == "true":
+    print("🟢 Cloudinary ACTIVADO desde settings.py")
+    
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
     CLOUDINARY_STORAGE = {
@@ -184,3 +186,6 @@ if os.getenv("FORCE_CLOUDINARY", "").lower() == "true":
         'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
         'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
     }
+else:
+    print("🔴 Cloudinary NO activado, sigue usando FileSystemStorage")
+
