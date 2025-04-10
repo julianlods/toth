@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -43,9 +44,7 @@ class DatosPersonales(models.Model):
     profesor_favorito = models.ForeignKey(
         Profesor, on_delete=models.SET_NULL, null=True, blank=True, related_name='alumnos'
     )
-    avatar = models.ImageField(
-        upload_to='avatars/', blank=True, null=True, verbose_name="Avatar"
-    )
+    avatar = CloudinaryField('avatar', blank=True, null=True)
 
     def __str__(self):
         return f"Datos personales de {self.usuario.username}"
@@ -69,8 +68,8 @@ class Contenido(models.Model):
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True, null=True)
     video_url = models.URLField(blank=True, null=True)
-    video_archivo = models.FileField(upload_to='videos/', blank=True, null=True)
-    archivo_pdf = models.FileField(upload_to='pdfs/', blank=True, null=True)
+    video_archivo = CloudinaryField('video_archivo', blank=True, null=True)
+    archivo_pdf = CloudinaryField('archivo_pdf', blank=True, null=True)
     categoria = models.ForeignKey(
         CategoriaContenido, on_delete=models.SET_NULL, null=True, blank=True, related_name='contenidos'
     )
@@ -161,9 +160,9 @@ class Novedad(models.Model):
 
     descripcion = models.TextField(blank=True, null=True)
     fecha = models.DateField(blank=True, null=True)
-    imagen = models.ImageField(upload_to='novedades/', blank=True, null=True)
+    imagen = CloudinaryField('imagen', blank=True, null=True)
     video = models.URLField(blank=True, null=True)
-    video_archivo = models.FileField(upload_to='novedades/videos/', blank=True, null=True)
+    video_archivo = CloudinaryField('video_archivo', blank=True, null=True)
     estado = models.BooleanField(
         choices=ESTADO_CHOICES, 
         default=True, 
@@ -208,7 +207,7 @@ class Pago(models.Model):
     )
     fecha = models.DateTimeField(auto_now_add=True)
     init_point = models.URLField(blank=True, null=True, verbose_name="URL de MercadoPago")
-    comprobante = models.FileField(upload_to="comprobantes/", blank=True, null=True)
+    comprobante = CloudinaryField('comprobante', blank=True, null=True)
 
     def __str__(self):
         return f"Pago de {self.usuario.username} - {self.clase.titulo if self.clase else 'Sin clase'} ({self.estado})"
