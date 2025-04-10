@@ -8,6 +8,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+if os.getenv("FORCE_CLOUDINARY", "").lower() == "true":
+    print("🟢 Cloudinary ACTIVADO desde settings.py")
+    
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+        'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+        'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+    }
+else:
+    print("🔴 Cloudinary NO activado, sigue usando FileSystemStorage")
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -176,16 +190,5 @@ MERCADO_PAGO_PUBLIC_KEY = os.getenv("MERCADO_PAGO_PUBLIC_KEY")
 MERCADO_PAGO_ACCESS_TOKEN = os.getenv("MERCADO_PAGO_ACCESS_TOKEN")
 
 
-if os.getenv("FORCE_CLOUDINARY", "").lower() == "true":
-    print("🟢 Cloudinary ACTIVADO desde settings.py")
-    
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
-        'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-        'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
-    }
-else:
-    print("🔴 Cloudinary NO activado, sigue usando FileSystemStorage")
 
