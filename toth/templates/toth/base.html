@@ -145,7 +145,8 @@
                         <img 
                             src="{% static 'toth/images/profesores/'|add:profe_folder|add:'/logo.png' %}" 
                             onerror="this.onerror=null; this.src='{% static 'toth/images/profesores/'|add:profe_folder|add:'/logo.jpg' %}';" 
-                            alt="Logo del Profesor" style="height: 75px; width: auto;">
+                            alt="Logo del Profesor"
+                            style="height: 75px; width: auto; transform: scale(2.0); transform-origin: center;">
                     {% endwith %}
                 {% else %}
                     <img 
