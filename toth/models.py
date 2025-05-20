@@ -68,7 +68,7 @@ class DatosPersonales(models.Model):
     avatar = CloudinaryField('avatar', blank=True, null=True)
 
     def __str__(self):
-        return f"Datos personales de {self.usuario.username}"
+        return f"Datos personales de {self.usuario.username if self.usuario else '(sin usuario)'}"
 
 
 # Categorías de contenido
