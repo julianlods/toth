@@ -26,5 +26,4 @@ urlpatterns = [
     path("informar-pago/<int:pago_id>/", informar_pago, name="informar_pago"),
     path("informar-pago-exitoso/", views.informar_pago_exitoso, name="informar_pago_exitoso"),
     path("guardar-monto/", guardar_monto, name="guardar_monto"),
-    path("debug-profesores/", views.debug_profesores),
 ]
