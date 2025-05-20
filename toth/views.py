@@ -502,3 +502,22 @@ def guardar_monto(request):
 
 def informar_pago_exitoso(request):
     return render(request, "toth/informar_pago_exitoso.html")
+
+
+from django.http import HttpResponse
+from toth.models import Profesor, DatosPersonales
+
+def debug_profesores(request):
+    resultado = []
+
+    resultado.append("=== PROFESORES ===")
+    for p in Profesor.objects.all():
+        resultado.append(f"ID: {p.id} - Nombre: {p.nombre}")
+
+    resultado.append("\n=== DATOS PERSONALES ===")
+    for dp in DatosPersonales.objects.all():
+        profesor = dp.profesor_favorito.nombre if dp.profesor_favorito else "(sin profesor)"
+        usuario = dp.usuario.username if dp.usuario else "(sin usuario)"
+        resultado.append(f"ID: {dp.id} - Usuario: {usuario} - Profesor favorito: {profesor}")
+
+    return HttpResponse("<br>".join(resultado))
