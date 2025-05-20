@@ -124,7 +124,9 @@ class Inscripcion(models.Model):
         ordering = ['orden', 'fecha_inscripcion']  # Ordena primero por orden manual, luego por fecha
 
     def __str__(self):
-        return f"{self.usuario.username} - {self.clase.titulo}"
+        usuario = self.usuario.username if self.usuario else "(sin usuario)"
+        clase = self.clase.titulo if self.clase else "(sin clase)"
+        return f"{usuario} - {clase}"
 
 
 # Registro de clases realizadas por los usuarios
@@ -140,7 +142,10 @@ class ClaseRealizada(models.Model):
     estado = models.CharField(max_length=20, choices=ESTADOS_CLASE, default="pendiente")
 
     def __str__(self):
-        return f"{self.usuario.username} - {self.clase.titulo} ({self.get_estado_display()})"
+        usuario = self.usuario.username if self.usuario else "(sin usuario)"
+        clase = self.clase.titulo if self.clase else "(sin clase)"
+        estado = self.get_estado_display() if self.estado else "(sin estado)"
+        return f"{usuario} - {clase} ({estado})"
 
 
 # Feedback asociado a clases realizadas
@@ -164,7 +169,12 @@ class FeedbackUsuario(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Feedback para {self.clase_realizada.clase.titulo} de {self.clase_realizada.usuario.username}"
+        try:
+            clase = self.clase_realizada.clase.titulo
+            usuario = self.clase_realizada.usuario.username
+            return f"Feedback para {clase} de {usuario}"
+        except:
+            return "Feedback (datos incompletos)"
 
 
 # Noticias y novedades
