@@ -208,10 +208,18 @@ class UsuarioAdmin(admin.ModelAdmin):
 
 @admin.register(DatosPersonales)
 class DatosPersonalesAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'profesor_favorito', 'lugar_origen', 'edad', 'estilos_musicales_favoritos')
+    list_display = ('get_usuario', 'get_profesor_favorito', 'lugar_origen', 'edad', 'estilos_musicales_favoritos')
     search_fields = ('usuario__username', 'profesor_favorito__nombre', 'lugar_origen', 'estilos_musicales_favoritos')
     list_filter = ('estilos_musicales_favoritos',)
     ordering = ('usuario',)
+
+    def get_usuario(self, obj):
+        return obj.usuario.username if obj.usuario else '(sin usuario)'
+    get_usuario.short_description = 'Usuario'
+
+    def get_profesor_favorito(self, obj):
+        return obj.profesor_favorito.nombre if obj.profesor_favorito else '(sin profesor)'
+    get_profesor_favorito.short_description = 'Profesor favorito'
 
 
 @admin.register(ClaseRealizada)
