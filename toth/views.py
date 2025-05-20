@@ -511,13 +511,19 @@ def debug_profesores(request):
     resultado = []
 
     resultado.append("=== PROFESORES ===")
-    for p in Profesor.objects.all():
-        resultado.append(f"ID: {p.id} - Nombre: {p.nombre}")
+    try:
+        for p in Profesor.objects.all():
+            resultado.append(f"ID: {p.id} - Nombre: {p.nombre}")
+    except Exception as e:
+        resultado.append(f"Error al cargar profesores: {str(e)}")
 
     resultado.append("\n=== DATOS PERSONALES ===")
-    for dp in DatosPersonales.objects.all():
-        profesor = dp.profesor_favorito.nombre if dp.profesor_favorito else "(sin profesor)"
-        usuario = dp.usuario.username if dp.usuario else "(sin usuario)"
-        resultado.append(f"ID: {dp.id} - Usuario: {usuario} - Profesor favorito: {profesor}")
+    try:
+        for dp in DatosPersonales.objects.all():
+            profesor = dp.profesor_favorito.nombre if dp.profesor_favorito else "(sin profesor)"
+            usuario = dp.usuario.username if dp.usuario else "(sin usuario)"
+            resultado.append(f"ID: {dp.id} - Usuario: {usuario} - Profesor favorito: {profesor}")
+    except Exception as e:
+        resultado.append(f"Error al cargar datos personales: {str(e)}")
 
     return HttpResponse("<br>".join(resultado))
