@@ -55,12 +55,8 @@
         width: 100%;
         z-index: 1030;
         background-color:
-        {% if user.is_authenticated %}
-            {% if user.datos_personales.profesor_favorito and user.datos_personales.profesor_favorito.color_header %}
-                {{ user.datos_personales.profesor_favorito.color_header }};
-            {% else %}
-                #171d1e;
-            {% endif %}
+        {% if user.is_authenticated and user.datos_personales and user.datos_personales.profesor_favorito and user.datos_personales.profesor_favorito.color_header %}
+            {{ user.datos_personales.profesor_favorito.color_header }};
         {% else %}
             #171d1e;
         {% endif %};
@@ -107,17 +103,13 @@
 
         footer {
             background-color:
-            {% if user.is_authenticated %}
-                {% if user.datos_personales.profesor_favorito and user.datos_personales.profesor_favorito.color_footer %}
-                    {{ user.datos_personales.profesor_favorito.color_footer }};
-                {% else %}
-                    #171d1e;
-                {% endif %}
+            {% if user.is_authenticated and user.datos_personales and user.datos_personales.profesor_favorito and user.datos_personales.profesor_favorito.color_footer %}
+                {{ user.datos_personales.profesor_favorito.color_footer }};
             {% else %}
                 #171d1e;
             {% endif %};
             color:
-            {% if user.is_authenticated and user.datos_personales.profesor_favorito and user.datos_personales.profesor_favorito.color_footer_text %}
+            {% if user.is_authenticated and user.datos_personales and user.datos_personales.profesor_favorito and user.datos_personales.profesor_favorito.color_footer_text %}
                 {{ user.datos_personales.profesor_favorito.color_footer_text }};
             {% else %}
                 white;
@@ -130,15 +122,11 @@
 
         footer a {
             color:
-            {% if user.is_authenticated %}
-                {% if user.datos_personales.profesor_favorito and user.datos_personales.profesor_favorito.color_footer_text %}
-                    {{ user.datos_personales.profesor_favorito.color_footer_text }};
-                {% else %}
-                    #ffffff;
-                {% endif %}
+            {% if user.is_authenticated and user.datos_personales and user.datos_personales.profesor_favorito and user.datos_personales.profesor_favorito.color_footer_text %}
+                {{ user.datos_personales.profesor_favorito.color_footer_text }};
             {% else %}
                 #ffffff;
-            {% endif %};
+            {% endif %}
             text-decoration: none;
             margin: 0 5px;
         }
@@ -152,7 +140,7 @@
     <header>
         <div class="container">
             <a href="{% url 'toth:index' %}">
-                {% if user.is_authenticated and user.datos_personales.profesor_favorito %}
+                {% if user.is_authenticated and user.datos_personales and user.datos_personales.profesor_favorito %}
                     {% with user.datos_personales.profesor_favorito.nombre|lower|cut:" " as profe_folder %}
                         <img 
                             src="{% static 'toth/images/profesores/'|add:profe_folder|add:'/logo.png' %}" 
@@ -216,7 +204,7 @@
     <footer>
         <div class="container">
             <div>
-                {% if user.is_authenticated and user.datos_personales.profesor_favorito %}
+                {% if user.is_authenticated and user.datos_personales and user.datos_personales.profesor_favorito %}
                     &copy; 2025 {{ user.datos_personales.profesor_favorito.nombre }}. Todos los derechos reservados.
                 {% else %}
                     &copy; 2025 Galope - Project Music. Todos los derechos reservados.
