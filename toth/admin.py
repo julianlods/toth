@@ -161,8 +161,9 @@ class InscripcionAdmin(admin.ModelAdmin):
 
 @admin.register(Profesor)
 class ProfesorAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'descripcion')
+    list_display = ('nombre', 'descripcion', 'color_header', 'color_footer', 'color_footer_text')
     search_fields = ('nombre',)
+    fields = ('nombre', 'descripcion', 'color_header', 'color_footer', 'color_footer_text')
 
 
 @admin.register(CategoriaContenido)

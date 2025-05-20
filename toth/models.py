@@ -27,6 +27,27 @@ class Profesor(models.Model):
     nombre = models.CharField(max_length=100, default="Profesor genérico")
     descripcion = models.TextField(blank=True, null=True)
 
+    color_header = models.CharField(
+        max_length=7,
+        blank=True,
+        null=True,
+        help_text="Color del header en formato HEX (ej: #ff5733)"
+    )
+
+    color_footer = models.CharField(
+        max_length=7,
+        blank=True,
+        null=True,
+        help_text="Color del fondo del footer en formato HEX (ej: #171d1e)"
+    )
+
+    color_footer_text = models.CharField(
+        max_length=7,
+        blank=True,
+        null=True,
+        help_text="Color del texto del footer en formato HEX (ej: #ffffff)"
+    )
+
     def __str__(self):
         return self.nombre
 
